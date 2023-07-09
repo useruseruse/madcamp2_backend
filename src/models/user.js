@@ -13,7 +13,7 @@ const OSchemaDefinition = {
     },
 	avatar: {
         type: Number,
-        required: true
+        required: true,
     },
     key: {
         type: String, 
@@ -21,7 +21,8 @@ const OSchemaDefinition = {
     }, 
     isReady: {
         type: Boolean, 
-        required: true
+        required: true,
+        default: false
     }, 
     banWord: {
         type: [String], 
@@ -31,8 +32,9 @@ const OSchemaDefinition = {
         required: true
     },
     isAlive: {
-        type: Number, 
-        required: true
+        type: Boolean, 
+        required: true,
+        default: true
     }
     
 };

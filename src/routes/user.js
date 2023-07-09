@@ -142,9 +142,9 @@ router.post('/banwords', async (req, res) => {
 router.post('/dead', async (req, res) => {
     try {
         const { userid } = req.body;
-        // setDead 로직 구현
-        // ...
-        return res.status(200).json();
+        const result = await UserModel.updateOne({ id: user.id }, { isAlive: false });
+        if (result.nModified === 0) return res.status(404).send({ err: 'User Not Found' });       
+        else return res.status(200).json();
     } catch (err) {
         return res.status(500).send(err);
     }

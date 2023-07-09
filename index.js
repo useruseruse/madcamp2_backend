@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const http = require("http");
 
 const { PORT, MONGO_URI } = process.env;
 
@@ -41,9 +42,19 @@ mongoose
 
 
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
    console.log(`Example App Listening @ http://localhost:${ port }`);
 });
 
+const SocketIo = require("socket.io");
+const io = SocketIo(server, {path: '/socket.io'});
+
+io.on("connection", (socket)=> {
+    socket.on("newMessage", (chat) => {
+        const data = JSON.parse(chat)
+        
+        io.emit("getMessage", data);
+      });
+});
 
 

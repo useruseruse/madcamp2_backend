@@ -53,10 +53,6 @@ io.on("connection", (socket)=> {
     socket.on("newMessage", (chat) => {
         const data = JSON.parse(chat)
         
-        // 새로운 메시지를 수신한 경우 처리
-        // chat 객체를 사용하여 원하는 작업을 수행합니다.
-    
-        // 다른 사용자들에게 채팅 메시지를 전파합니다.
         io.emit("getMessage", data);
       });
 });

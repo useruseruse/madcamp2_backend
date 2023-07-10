@@ -1,9 +1,6 @@
 const router = require('express').Router();
 const UserModel = require('../models/user');
 
-
-
-
 // getUser
 router.get('/getUser', async (req, res) => {
     try{
@@ -20,9 +17,11 @@ router.get('/getUser', async (req, res) => {
 
 router.post('/isUserExists', async (req, res) => {
     try{
-        const { id } = req.body;
-        const user = await UserModel.findOne({id: id});
-        if (!user) return res.status(404).send({ err: 'Cannot Find User' });
+        const { user } = req.body;
+        console.log(user);
+        console.log("왜안돼")
+        const resultUser = await UserModel.findOne({key: user.key});
+        if (!resultUser) return res.status(404).send({ err: 'Cannot Find User' });
         else return res.status(200).json({ exists: true });
     }catch(err){
         return res.status(500).send(err);

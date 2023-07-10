@@ -6,7 +6,7 @@ const OSchemaDefinition = {
         required: true
     },
 	users: { 
-        type: [mongoose.Schema.Types.User],
+        type: [Object],
         required: true
     },
 	roomTitle: {

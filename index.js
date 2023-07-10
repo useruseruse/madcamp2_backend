@@ -6,7 +6,7 @@ const http = require("http");
 const { PORT, MONGO_URI } = process.env;
 
 const app = express();
-const port = 3000;
+const port = 80;
 
 app.use(express.json());
 //const chatRouter = require('./src/routes/chat');

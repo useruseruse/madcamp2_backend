@@ -55,13 +55,26 @@ router.get('/get', async (req, res) => {
 // addUser
 router.post('/add', async (req, res) => {
     try{
-        const { user } = req.user;
-        const newUser = new UserModel(user.id, user.key, user.name, user.avatar, user.isReady, user.isAlive, user.banWord, user.currentRoom);
-        const result = await newUser.save()
+        const { user } = req.body;
+        const userId = user.userId
+        const name = user.name
+        const avatar = user.avatar
+        const key = user.key
+        const banWord = user.banWord
+        const currentRoom = user.currentRoom
+        const isReady = user.isReady
+        const isAlive = user.isAlive 
+
+        const newUser = new UserModel({userId, name, avatar, key, isReady, banWord, currentRoom, isAlive});
+        console.log("new",newUser)
+        const result = await newUser.save();
+
+        console.log("saved", result)
         if (!result) return res.status(404).send({ err: 'Cannot Add User' });
         else return res.status(200).json({ isOK: true });
     }catch(err){
-        return res.status(500).send(err);
+        console.log("error ", err)
+        return res.status(530).send(err);
     }
 });
 

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const OSchemaDefinition = {
-    id: {
+    userId: {
         type: Number,
         required: true,
         unique: true

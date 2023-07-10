@@ -50,10 +50,36 @@ const SocketIo = require("socket.io");
 const io = SocketIo(server, {path: '/socket.io'});
 
 io.on("connection", (socket)=> {
+    console.log(`enter`)
+    socket.on('enter', (data)=> {
+        const userData = JSON.parse(data)
+        const roomNum = userData.currentRoom
+
+        socket.join(`${roomNum}`)
+    })
+
+    socket.on('left', (data) => {
+        const userData = JSON.parse(data)
+        const roomNum = userData.currentRoom
+    
+        socket.leave(`${roomNum}`)
+    })
+ 
+    socket.on(`dead`, (data)=> {
+        const userData = JSON.parse(data)
+        const roomNum = userData.currentRoom
+        io.to(`${data.room}`).emit(`someoneDead`, JSON.stringify(data))
+    })
+
+    socket.on(`ready`, (data)=> {
+        const userData = JSON.parse(data)
+        const roomNum = userData.currentRoom
+        io.to(`${data.room}`).emit(`someoneReady`, JSON.stringify(data))
+    })
+
     socket.on("newMessage", (chat) => {
-        const data = JSON.parse(chat)
         
-        io.emit("getMessage", data);
+        io.to(`${data.room}`).emit(`getMessage`, JSON.stringify(data))
       });
 });
 

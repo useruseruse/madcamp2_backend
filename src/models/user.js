@@ -12,7 +12,7 @@ const OSchemaDefinition = {
         unique: true
     },
 	avatar: {
-        type: Number,
+        type: String,
         required: true,
     },
     key: {

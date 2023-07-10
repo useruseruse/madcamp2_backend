@@ -4,24 +4,11 @@ const UserModel = require('../models/user');
 
 
 
-// getUser
-router.get('/getUser', async (req, res) => {
-    try{
-        const { key, name, avatar } = req.body;
-        const newUser = new UserModel({key, name, avatar});
-        const result = await newUser.save()
-        if (!result) return res.status(404).send({ err: 'Cannot Add User' });
-        else return res.status(200).json({ isOK: true });
-    }catch(err){
-        return res.status(500).send(err);
-    }
-});
-
 
 router.post('/isUserExists', async (req, res) => {
     try{
         const { id } = req.body;
-        const user = await UserModel.findOne({id: id});
+        const user = await UserModel.findById(id)
         if (!user) return res.status(404).send({ err: 'Cannot Find User' });
         else return res.status(200).json({ exists: true });
     }catch(err){
@@ -43,8 +30,8 @@ router.get('/all', async (req, res) => {
 // getUser
 router.get('/get', async (req, res) => {
     try {
-        const { user } = req.body;
-        const foundUser = await UserModel.findOne({ id: user.id });
+        const { id } = req.body;
+        const foundUser = await UserModel.findById(id)
         if (!foundUser) return res.status(404).send({ err: 'User Not Found' });
         else return res.status(200).json(foundUser);
     } catch (err) {
@@ -64,11 +51,10 @@ router.post('/add', async (req, res) => {
         const currentRoom = user.currentRoom
         const isReady = user.isReady
         const isAlive = user.isAlive 
-
-        const newUser = new UserModel({userId, name, avatar, key, isReady, banWord, currentRoom, isAlive});
+        const newUser = await new UserModel({userId, name, avatar, key, isReady, banWord, currentRoom, isAlive});
+        const updateResult = await UserModel.findById(id).updateOne({userId: id})
         console.log("new",newUser)
         const result = await newUser.save();
-
         console.log("saved", result)
         if (!result) return res.status(404).send({ err: 'Cannot Add User' });
         else return res.status(200).json({ isOK: true });

@@ -57,15 +57,6 @@ router.post('/add', async (req, res) => {
 
 // isUserExist
 router.post('/exist', async (req, res) => {
-    // try {
-    //     const { user } = req.body;
-    //     const foundUser = await UserModel.findOne({ key: user.key});
-    //     console.log("found data: ", foundUser)
-    //     if (foundUser) return res.status(200).json(true);
-    //     else return res.status(200).json(false);
-    // } catch (err) {
-    //     return res.status(500).send(err);
-    // }
     try {
         const { user } = req.body;
         const foundUser = await UserModel.findOne({ key: user.key});

@@ -105,7 +105,9 @@ router.post('/delete', async (req, res) => {
 router.post('/avatar', async (req, res) => {
     try {
         const { user } = req.body;
+        console.log(user)
         const result = await UserModel.findByIdAndUpdate(user.userId, { avatar: user.avatar });
+        console.log(result)
         if (result.nModified === 0) return res.status(404).send({ err: 'Avatar not changed' });
         else return res.status(200).json();
     } catch (err) {

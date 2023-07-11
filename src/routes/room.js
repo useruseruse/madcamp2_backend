@@ -10,7 +10,7 @@ router.get('/all', async (req, res) => {
         const roomList= await RoomModel.find()
         console.log(roomList)
         if (!roomList) return res.status(404).send({ err: 'Cannot Find Room' });
-        else return res.status(200).json({ roomList: roomList });
+        else return res.status(200).json( roomList );
     }catch(err){
         console.log(err)
         return res.status(500).send(err);
@@ -101,7 +101,7 @@ router.post('/getMyRoom', async (req, res) => {
         const { user } = req.body;
         const roomId = user.currentRoom
         const room = await RoomModel.findOne({roomId: roomId})
-        console.log(`id : ${roomId}`)
+        console.log(`id : ${room}`)
         if (room) return res.status(200).json(room);
         else return res.status(404).json("user is not in any room");
     } catch (err) {

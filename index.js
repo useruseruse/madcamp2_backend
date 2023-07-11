@@ -6,7 +6,7 @@ const http = require("http");
 const { PORT, MONGO_URI } = process.env;
 
 const app = express();
-const port = 80;
+const port = 3000;
 
 app.use(express.json());
 //const chatRouter = require('./src/routes/chat');
@@ -95,9 +95,9 @@ io.on("connection", (socket)=> {
 
     socket.on("newMessage", (data) => {
         const userData = JSON.parse(data)
-        const currentRoom = userData.currentRoom
-        io.to(`${currentRoom}`).emit(`getMessage`, JSON.stringify(data))
-        // io.to(`${data.room}`).emit(`getMessage`, JSON.stringify(data))
+        console.log(userData)
+        const currentRoom = userData.room
+        io.to(`${currentRoom}`).emit(`getMessage`, data)
       });
 });
 

@@ -2,13 +2,14 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const http = require("http");
-
+const cors = require('cors');
 const { PORT, MONGO_URI } = process.env;
 
 const app = express();
-const port = 3000;
+const port = 80;
 
 app.use(express.json());
+app.use(cors())
 //const chatRouter = require('./src/routes/chat');
 const userRouter = require('./src/routes/user');
 const roomRouter = require('./src/routes/room');
@@ -47,14 +48,21 @@ const server = app.listen(port, () => {
 });
 
 const SocketIo = require("socket.io");
-const io = SocketIo(server, {path: '/socket.io'});
+//const io = SocketIo(server, {path: '/socket.io'});
+const io = require("socket.io")(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
 
 io.on("connection", (socket)=> {
     console.log(`enter`)
     socket.on('enter', (data)=> {
         const userData = JSON.parse(data)
         const roomNum = userData.currentRoom
-
+        console.log(userData.name)
+        console.log(roomNum, "roomNum");
         socket.join(`${roomNum}`)
     })
 
@@ -75,8 +83,10 @@ io.on("connection", (socket)=> {
     socket.on(`ready`, (data)=> {
         const userData = JSON.parse(data)
         const roomNum = userData.currentRoom
+        console.log(roomNum)
         // io.to(`${data.room}`).emit(`someoneReady`, JSON.stringify(data))
         io.to(`${roomNum}`).emit(`someoneReady`, data)
+        
     })
 
     socket.on(`submit`, (data)=> {
@@ -89,13 +99,16 @@ io.on("connection", (socket)=> {
     socket.on(`readyEnter`, (data) => {
         const userData = JSON.parse(data)
         const roomNum = userData.currentRoom
+        console.log("ready")
+        
         // io.to(`${data.room}`).emit(`someoneReady`, JSON.stringify(data))
         io.to(`${roomNum}`).emit(`someoneEnter`, data)
+        console.log(data)
     })
 
     socket.on("newMessage", (data) => {
         const userData = JSON.parse(data)
-        console.log(userData)
+        console.log("newmsg")
         const currentRoom = userData.room
         io.to(`${currentRoom}`).emit(`getMessage`, data)
       });

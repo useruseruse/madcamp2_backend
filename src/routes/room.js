@@ -2,8 +2,6 @@ const router = require('express').Router();
 const RoomModel = require('../models/room');
 const UserModel = require('../models/user');
 
-
-
 // getRoomList
 router.get('/all', async (req, res) => {
     try{
@@ -11,6 +9,7 @@ router.get('/all', async (req, res) => {
         if (!roomList) return res.status(404).send({ err: 'Cannot Find Room' });
         else return res.status(200).json( roomList );
     }catch(err){
+        console.log(err)
         return res.status(500).send(err);
     }
 });
@@ -34,19 +33,22 @@ router.post('/add', async (req, res) => {
             { roomId: newRoom._id },
             { new: true }
         );
+
         const updatedUser = await UserModel.findByIdAndUpdate(
             users[0].userId, 
             {currentRoom: newRoom._id},
             {new: true}
         );
 
+        updatedRoom.users[0] = updatedUser;
+        await updatedRoom.save();
+
         if (!updatedRoom) return res.status(404).send({ err: 'Cannot Add Room' });
         else {
+            console.log("updated", updatedRoom);
             return res.status(200).json(updatedRoom);
         }
-
-
-    }catch(err){
+    } catch(err){
         return res.status(500).send(err);
     }
 });
@@ -83,12 +85,12 @@ router.post('/leave', async (req, res) => {
             return res.status(444).json("user is not in any room");
         }
         else if(curr_room.users.length == 1){       //남은 유저가 한명이면 방 폭파 
-            const update_currRoom = await UserModel.updateOne({userId: user.userId},{currentRoom: -1})
-            if(update_currRoom) return res.status(454).json("user cannot leave a room ")
+            const update_currRoom = await UserModel.updateOne({userId: user.userId},{currentRoom: "-1"})
+            if(!update_currRoom) return res.status(454).json("user cannot leave a room ")
 
-            const delete_room = await RoomModel.deleteOne({roomId: curr_room_id})          
-            if (delete_room) return res.status(464).json("room is not properly deleted")
-            
+            const delete_room = await RoomModel.deleteOne({_id: curr_room_id})
+            if (delete_room.deletedCount == 0) return res.status(464).json("room is not properly deleted")
+
             return res.status(200).json("user properly leaved room and room deleted")
         }
         else{                                       //남은 유저가 여러명이면 방의 유저 변경 
@@ -96,7 +98,7 @@ router.post('/leave', async (req, res) => {
             const update_roomUsers = await RoomModel.updateOne({roomId: curr_room_id},{users: users})
             if(!update_roomUsers) return res.status(474).json("user did not leave the room")
 
-            const update_currRoom = await UserModel.updateOne({userId: user.userId},{currentRoom: -1})
+            const update_currRoom = await UserModel.updateOne({userId: user.userId},{currentRoom: "-1"})
             if (!update_currRoom) return res.status(484).json("room is not properly updated")
 
            return res.status(200).json("user properly leaved room and room updated")
@@ -113,11 +115,11 @@ router.post('/getMyRoom', async (req, res) => {
         const { user } = req.body;
         const roomId = user.currentRoom
         const room = await RoomModel.findOne({roomId: roomId})
-        
+        console.log("getmyroom")
         if (room) return res.status(200).json(room);
         else return res.status(404).json("user is not in any room");
     } catch (err) {
-        
+        console.log(err)
         return res.status(500).send(err);
     }
 });

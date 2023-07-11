@@ -71,7 +71,7 @@ router.post('/add', async (req, res) => {
         console.log("new",newUser)
         const result = await newUser.save();
         if (!result) return res.status(404).send({ err: 'Cannot Add User' });
-        else return res.status(200).json({ isOK: true });
+        else return res.status(200).json(newUser);
     }catch(err){
         console.log("error ", err)
         return res.status(530).send(err);

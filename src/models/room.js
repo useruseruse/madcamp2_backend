@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const OSchemaDefinition = { 
     roomId: {
-        type: Number,
+        type: String,
         required: true
     },
 	users: { 

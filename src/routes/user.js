@@ -107,7 +107,7 @@ router.post('/nameExist', async (req, res) => {
 router.post('/delete', async (req, res) => {
     try {
         const { user } = req.body;
-        const result = await UserModel.deleteOne({ id: user.id });
+        const result = await UserModel.findByIdAndDelete(user.userId);
         if (result.deletedCount === 0) return res.status(404).send({ err: 'User Not Delete' });
         else return res.status(200).json();
     } catch (err) {
@@ -119,7 +119,7 @@ router.post('/delete', async (req, res) => {
 router.post('/avatar', async (req, res) => {
     try {
         const { user } = req.body;
-        const result = await UserModel.updateOne({ id: user.id }, { avatar: user.avatar });
+        const result = await UserModel.findByIdAndUpdate(user.userId, { avatar: user.avatar });
         if (result.nModified === 0) return res.status(404).send({ err: 'Avatar not changed' });
         else return res.status(200).json();
     } catch (err) {
@@ -139,11 +139,13 @@ router.post('/ready', async (req, res) => {
     }
 });
 
-// setBanwords
+// setBanwords (need to test)
 router.post('/banwords', async (req, res) => {
     try {
         const { user } = req.body;
-        const result = await UserModel.updateOne({ id: user.id }, { banWord: user.banWord });
+        const result = await UserModel.findByIdAndUpdate( user.userId, { banWord: user.banWord });       //유저 업데이트 S
+        const room = await RoomModel.findById(user.currentRoom)
+        const update_roomUsers =  await room.updateOne({"users._id":user.id}, {"users.banword": user.banWord })   // 유저가 있는 room의 users에서 하나의 user만 업데이트 
         if (result.nModified === 0) return res.status(404).send({ err: 'User Not Found' });
         else return res.status(200).json();
     } catch (err) {

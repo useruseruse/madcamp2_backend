@@ -28,7 +28,7 @@ const OSchemaDefinition = {
         type: [String], 
     }, 
     currentRoom: {
-        type: Number, 
+        type: String, 
         required: true
     },
     isAlive: {

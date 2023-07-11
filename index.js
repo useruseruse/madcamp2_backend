@@ -68,18 +68,36 @@ io.on("connection", (socket)=> {
     socket.on(`dead`, (data)=> {
         const userData = JSON.parse(data)
         const roomNum = userData.currentRoom
-        io.to(`${data.room}`).emit(`someoneDead`, JSON.stringify(data))
+        // io.to(`${data.room}`).emit(`someoneDead`, JSON.stringify(data))
+        io.to(`${roomNum}`).emit(`someoneDead`, JSON.stringify(data))
     })
 
     socket.on(`ready`, (data)=> {
         const userData = JSON.parse(data)
         const roomNum = userData.currentRoom
-        io.to(`${data.room}`).emit(`someoneReady`, JSON.stringify(data))
+        // io.to(`${data.room}`).emit(`someoneReady`, JSON.stringify(data))
+        io.to(`${roomNum}`).emit(`someoneReady`, JSON.stringify(data))
     })
 
-    socket.on("newMessage", (chat) => {
-        
-        io.to(`${data.room}`).emit(`getMessage`, JSON.stringify(data))
+    socket.on(`submit`, (data)=> {
+        const userData = JSON.parse(data)
+        const roomNum = userData.currentRoom
+        // io.to(`${data.room}`).emit(`someoneReady`, JSON.stringify(data))
+        io.to(`${roomNum}`).emit(`someoneSubmit`, JSON.stringify(data))
+    })
+
+    socket.on(`readyEnter`, (data) => {
+        const userData = JSON.parse(data)
+        const roomNum = userData.currentRoom
+        // io.to(`${data.room}`).emit(`someoneReady`, JSON.stringify(data))
+        io.to(`${roomNum}`).emit(`someoneEnter`, JSON.stringify(data))
+    })
+
+    socket.on("newMessage", (data) => {
+        const userData = JSON.parse(data)
+        const currentRoom = userData.currentRoom
+        io.to(`${currentRoom}`).emit(`getMessage`, JSON.stringify(data))
+        // io.to(`${data.room}`).emit(`getMessage`, JSON.stringify(data))
       });
 });
 

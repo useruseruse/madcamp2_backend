@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const OSchemaDefinition = {
     userId: {
-        type: Number,
+        type: String,
         required: true,
         unique: true
     },
@@ -12,7 +12,7 @@ const OSchemaDefinition = {
         unique: true
     },
 	avatar: {
-        type: Number,
+        type: String,
         required: true,
     },
     key: {
@@ -28,7 +28,7 @@ const OSchemaDefinition = {
         type: [String], 
     }, 
     currentRoom: {
-        type: Number, 
+        type: String, 
         required: true
     },
     isAlive: {

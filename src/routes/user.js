@@ -1,18 +1,6 @@
 const router = require('express').Router();
 const UserModel = require('../models/user');
 
-// getUser
-router.get('/getUser', async (req, res) => {
-    try{
-        const { key, name, avatar } = req.body;
-        const newUser = new UserModel({key, name, avatar});
-        const result = await newUser.save()
-        if (!result) return res.status(404).send({ err: 'Cannot Add User' });
-        else return res.status(200).json({ isOK: true });
-    }catch(err){
-        return res.status(500).send(err);
-    }
-});
 
 
 router.post('/isUserExists', async (req, res) => {
@@ -38,10 +26,11 @@ router.get('/all', async (req, res) => {
 });
 
 // getUser
-router.get('/get', async (req, res) => {
+router.post('/get', async (req, res) => {
     try {
-        const { id } = req.body;
-        const foundUser = await UserModel.findById(id)
+        const { user } = req.body;
+        const foundUser = await UserModel.findById(user.userId)
+        console.log(foundUser)
         if (!foundUser) return res.status(404).send({ err: 'User Not Found' });
         else return res.status(200).json(foundUser);
     } catch (err) {
@@ -119,7 +108,9 @@ router.post('/delete', async (req, res) => {
 router.post('/avatar', async (req, res) => {
     try {
         const { user } = req.body;
+        console.log(user)
         const result = await UserModel.findByIdAndUpdate(user.userId, { avatar: user.avatar });
+        console.log(result)
         if (result.nModified === 0) return res.status(404).send({ err: 'Avatar not changed' });
         else return res.status(200).json();
     } catch (err) {

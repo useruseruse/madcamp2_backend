@@ -1,31 +1,6 @@
 const router = require('express').Router();
 const UserModel = require('../models/user');
 
-// getUser
-router.get('/getUser', async (req, res) => {
-    try{
-        const { key, name, avatar } = req.body;
-        const newUser = new UserModel({key, name, avatar});
-        const result = await newUser.save()
-        if (!result) return res.status(404).send({ err: 'Cannot Add User' });
-        else return res.status(200).json({ isOK: true });
-    }catch(err){
-        return res.status(500).send(err);
-    }
-});
-
-
-router.post('/isUserExists', async (req, res) => {
-    try{
-        const { id } = req.body;
-        const user = await UserModel.findById(id)
-        if (!user) return res.status(404).send({ err: 'Cannot Find User' });
-        else return res.status(200).json({ exists: true });
-    }catch(err){
-        return res.status(500).send(err);
-    }
-});
-
 // getUserAll
 router.get('/all', async (req, res) => {
     try {
@@ -38,10 +13,10 @@ router.get('/all', async (req, res) => {
 });
 
 // getUser
-router.get('/get', async (req, res) => {
+router.post('/get', async (req, res) => {
     try {
-        const { id } = req.body;
-        const foundUser = await UserModel.findById(id)
+        const { user } = req.body;
+        const foundUser = await UserModel.findById(user.userId)
         if (!foundUser) return res.status(404).send({ err: 'User Not Found' });
         else return res.status(200).json(foundUser);
     } catch (err) {
@@ -63,29 +38,40 @@ router.post('/add', async (req, res) => {
         const isAlive = user.isAlive 
         const newUser = await new UserModel({userId, name, avatar, key, isReady, banWord, currentRoom, isAlive}).save();
 
-        const updateResult = await UserModel.findByIdAndUpdate(
+        const updatedUser = await UserModel.findByIdAndUpdate(
             newUser._id,
             { userId: newUser._id },
             { new: true }
         );
-        console.log("new",newUser)
-        const result = await newUser.save();
-        if (!result) return res.status(404).send({ err: 'Cannot Add User' });
-        else return res.status(200).json(newUser);
-    }catch(err){
+
+        if (!updatedUser) return res.status(404).send({ err: 'Cannot Add User' });
+        else {
+            console.log("updated", updatedUser);
+            return res.status(200).json(updatedUser);
+        }
+    } catch(err){
         console.log("error ", err)
         return res.status(530).send(err);
     }
 });
 
-
-// isUserKeyExist
+// isUserExist
 router.post('/exist', async (req, res) => {
+    // try {
+    //     const { user } = req.body;
+    //     const foundUser = await UserModel.findOne({ key: user.key});
+    //     console.log("found data: ", foundUser)
+    //     if (foundUser) return res.status(200).json(true);
+    //     else return res.status(200).json(false);
+    // } catch (err) {
+    //     return res.status(500).send(err);
+    // }
     try {
         const { user } = req.body;
         const foundUser = await UserModel.findOne({ key: user.key});
-        if (foundUser) return res.status(200).json(true);
-        else return res.status(200).json(false);
+        console.log("found data: ", foundUser)
+        if (!foundUser) return res.status(404).send({ err: 'User Not Found' });
+        else return res.status(200).json(foundUser);
     } catch (err) {
         return res.status(500).send(err);
     }

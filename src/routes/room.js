@@ -1,8 +1,9 @@
 const router = require('express').Router();
 const RoomModel = require('../models/room');
 const UserModel = require('../models/user');
-
-
+router.get('/', async (req, res) => {
+    res.send("test");
+})
 
 // getRoomList
 router.get('/all', async (req, res) => {

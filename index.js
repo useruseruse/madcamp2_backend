@@ -69,28 +69,28 @@ io.on("connection", (socket)=> {
         const userData = JSON.parse(data)
         const roomNum = userData.currentRoom
         // io.to(`${data.room}`).emit(`someoneDead`, JSON.stringify(data))
-        io.to(`${roomNum}`).emit(`someoneDead`, JSON.stringify(data))
+        io.to(`${roomNum}`).emit(`someoneDead`, data)
     })
 
     socket.on(`ready`, (data)=> {
         const userData = JSON.parse(data)
         const roomNum = userData.currentRoom
         // io.to(`${data.room}`).emit(`someoneReady`, JSON.stringify(data))
-        io.to(`${roomNum}`).emit(`someoneReady`, JSON.stringify(data))
+        io.to(`${roomNum}`).emit(`someoneReady`, data)
     })
 
     socket.on(`submit`, (data)=> {
         const userData = JSON.parse(data)
         const roomNum = userData.currentRoom
         // io.to(`${data.room}`).emit(`someoneReady`, JSON.stringify(data))
-        io.to(`${roomNum}`).emit(`someoneSubmit`, JSON.stringify(data))
+        io.to(`${roomNum}`).emit(`someoneSubmit`, data)
     })
 
     socket.on(`readyEnter`, (data) => {
         const userData = JSON.parse(data)
         const roomNum = userData.currentRoom
         // io.to(`${data.room}`).emit(`someoneReady`, JSON.stringify(data))
-        io.to(`${roomNum}`).emit(`someoneEnter`, JSON.stringify(data))
+        io.to(`${roomNum}`).emit(`someoneEnter`, data)
     })
 
     socket.on("newMessage", (data) => {

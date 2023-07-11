@@ -8,11 +8,9 @@ const UserModel = require('../models/user');
 router.get('/all', async (req, res) => {
     try{
         const roomList= await RoomModel.find()
-        console.log(roomList)
         if (!roomList) return res.status(404).send({ err: 'Cannot Find Room' });
         else return res.status(200).json( roomList );
     }catch(err){
-        console.log(err)
         return res.status(500).send(err);
     }
 });
@@ -30,7 +28,6 @@ router.post('/add', async (req, res) => {
         const isStart = room.isStart
     
         const newRoom = await new RoomModel({roomId, users, roomTitle, roomMode, roomMinPpl, roomMaxPpl, isStart}).save();
-        console.log(`title : ${newRoom}`)
 
         const updatedRoom = await RoomModel.findByIdAndUpdate(
             newRoom._id,
@@ -42,11 +39,9 @@ router.post('/add', async (req, res) => {
             {currentRoom: newRoom._id},
             {new: true}
         );
-        console.log(users[0].userId, newRoom._id)
 
         if (!updatedRoom) return res.status(404).send({ err: 'Cannot Add Room' });
         else {
-            console.log("updated", updatedRoom);
             return res.status(200).json(updatedRoom);
         }
 
@@ -118,11 +113,11 @@ router.post('/getMyRoom', async (req, res) => {
         const { user } = req.body;
         const roomId = user.currentRoom
         const room = await RoomModel.findOne({roomId: roomId})
-        console.log(`id : ${room}`)
+        
         if (room) return res.status(200).json(room);
         else return res.status(404).json("user is not in any room");
     } catch (err) {
-        console.log(err)
+        
         return res.status(500).send(err);
     }
 });

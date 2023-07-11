@@ -10,11 +10,11 @@ const OSchemaDefinition = {
         required: true
     },
 	avatar : {
-        type: Number,
+        type: String,
         required: true
     },
 	room : {
-        type: Number,
+        type: String,
         required: true
     }
 }

@@ -46,11 +46,9 @@ router.post('/add', async (req, res) => {
 
         if (!updatedUser) return res.status(404).send({ err: 'Cannot Add User' });
         else {
-            console.log("updated", updatedUser);
             return res.status(200).json(updatedUser);
         }
     } catch(err){
-        console.log("error ", err)
         return res.status(530).send(err);
     }
 });
@@ -60,7 +58,6 @@ router.post('/exist', async (req, res) => {
     try {
         const { user } = req.body;
         const foundUser = await UserModel.findOne({ key: user.key});
-        console.log("found data: ", foundUser)
         if (!foundUser) return res.status(404).send({ err: 'User Not Found' });
         else return res.status(200).json(foundUser);
     } catch (err) {
@@ -96,9 +93,7 @@ router.post('/delete', async (req, res) => {
 router.post('/avatar', async (req, res) => {
     try {
         const { user } = req.body;
-        console.log(user)
         const result = await UserModel.findByIdAndUpdate(user.userId, { avatar: user.avatar });
-        console.log(result)
         if (result.nModified === 0) return res.status(404).send({ err: 'Avatar not changed' });
         else return res.status(200).json();
     } catch (err) {

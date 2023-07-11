@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const RoomModel = require('../models/room');
 const UserModel = require('../models/user');
-
 router.get('/', async (req, res) => {
     res.send("test");
 })
@@ -50,11 +49,11 @@ router.post('/enter', async (req, res) => {
         const roomAndUser = req.body;
         const room = roomAndUser.room
         const user = roomAndUser.user
-        const update_currRoom = await UserModel.updateOne({id: user.id}, {currentRoom: room.id})
+        const update_currRoom = await UserModel.updateOne({userId: user.id}, {currentRoom: room.id})
         if(!update_currRoom) return res.status(404).json("cannot update user's current room ")
 
         const users = room.users.push(user)
-        const update_roomUsers = await RoomModel.updateOne({id: room.id}, {users: users})
+        const update_roomUsers = await RoomModel.updateOne({roomId: room.id}, {users: users})
         if(!update_roomUsers) return res.status(404).json("cannot update users in room ")
 
         return res.status(200).json(true);

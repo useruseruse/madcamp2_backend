@@ -42,10 +42,8 @@ router.post('/add', async (req, res) => {
 
         updatedRoom.users[0] = updatedUser;
         await updatedRoom.save();
-
         if (!updatedRoom) return res.status(404).send({ err: 'Cannot Add Room' });
         else {
-            console.log("updated", updatedRoom);
             return res.status(200).json(updatedRoom);
         }
     } catch(err){

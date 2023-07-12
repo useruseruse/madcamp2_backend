@@ -62,13 +62,14 @@ io.on("connection", (socket)=> {
         const userData = JSON.parse(data)
         const roomNum = userData.currentRoom
         console.log(userData.name)
-        console.log(roomNum, "roomNum");
         socket.join(`${roomNum}`)
     })
 
     socket.on('left', (data) => {
         const userData = JSON.parse(data)
         const roomNum = userData.currentRoom
+
+        io.to(`${roomNum}`).emit(`someoneLeft`, data)
     
         socket.leave(`${roomNum}`)
     })
@@ -83,7 +84,6 @@ io.on("connection", (socket)=> {
     socket.on(`ready`, (data)=> {
         const userData = JSON.parse(data)
         const roomNum = userData.currentRoom
-        console.log(roomNum)
         // io.to(`${data.room}`).emit(`someoneReady`, JSON.stringify(data))
         io.to(`${roomNum}`).emit(`someoneReady`, data)
         
@@ -103,7 +103,6 @@ io.on("connection", (socket)=> {
         
         // io.to(`${data.room}`).emit(`someoneReady`, JSON.stringify(data))
         io.to(`${roomNum}`).emit(`someoneEnter`, data)
-        console.log(data)
     })
 
     socket.on("newMessage", (data) => {

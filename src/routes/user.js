@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const RoomModel = require('../models/room');
 const UserModel = require('../models/user');
 
 // getUserAll
@@ -115,15 +116,33 @@ router.post('/ready', async (req, res) => {
 
 // setBanwords (need to test)
 router.post('/banwords', async (req, res) => {
+    console.log("call banwords")
     try {
         const { user } = req.body;
-        const result = await UserModel.findByIdAndUpdate( user.userId, { banWord: user.banWord });       //유저 업데이트 S
-        const room = await RoomModel.findById(user.currentRoom)
-        const update_roomUsers =  await room.updateOne({"users._id":user.id}, {"users.banword": user.banWord })   // 유저가 있는 room의 users에서 하나의 user만 업데이트 
-        if (result.nModified === 0) return res.status(404).send({ err: 'User Not Found' });
-        else return res.status(200).json();
+        console.log("user", user)
+        const updatedUser = await UserModel.findByIdAndUpdate( 
+            user.userId, 
+            { banWord: user.banWord },
+            { new: true }
+        );   
+        console.log("updated, user", updatedUser)
+        const currentRoom = await RoomModel.findOne({ roomId: user.currentRoom })
+        
+        // find the index of the user to be updated in the users array
+        const userIndex = currentRoom.users.findIndex(u => u._id == updatedUser.userId);
+        
+        if (userIndex > -1) {
+            // remove the user from the array
+            currentRoom.users.splice(userIndex, 1);
+            // add the updated user to the array
+            currentRoom.users.push(updatedUser);
+            // save the changes to the database
+            await currentRoom.save();
+        }
+        
+        return res.status(200).json("success");
     } catch (err) {
-        return res.status(500).send(err);
+        return res.status(574).send(err);
     }
 });
 
